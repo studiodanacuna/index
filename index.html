@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>⚽ Trébol VIP - Pronósticos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;800&display=swap" rel="stylesheet"/>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #070a1b, #121f40, #0c3b4f);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 20px;
+      min-height: 100vh;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    header h1 {
+      font-size: 2.8em;
+      margin: 0;
+      color: #00ffa6;
+      text-shadow: 2px 2px 12px #000;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 750px;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .section-title {
+      font-size: 1.4em;
+      margin-bottom: 15px;
+      color: #00ffa6;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 15px;
+      border-radius: 12px;
+      border: none;
+      font-size: 1.1em;
+      outline: none;
+      margin-bottom: 20px;
+      background: #1c2a3a;
+      color: #fff;
+    }
+
+    button {
+      width: 100%;
+      background: linear-gradient(to right, #00ffa6, #00cc88);
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      color: #000;
+    }
+
+    button:hover {
+      background: linear-gradient(to right, #00cc88, #00aa77);
+    }
+
+    #respuesta {
+      background-color: #e7fff5;
+      color: #000;
+      padding: 20px;
+      border-radius: 12px;
+      font-size: 1em;
+      margin-top: 25px;
+      display: none;
+      white-space: pre-wrap;
+    }
+
+    .pronostico {
+      margin-top: 30px;
+      background-color: #00213a;
+      padding: 20px;
+      border-left: 6px solid #00ffa6;
+      border-radius: 15px;
+      color: #c3fcef;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .pronostico p {
+      margin: 10px 0;
+      font-size: 1em;
+      display: flex;
+      align-items: center;
+    }
+
+    .pronostico p span {
+      margin-right: 10px;
+    }
+
+    .footer {
+      margin-top: 40px;
+      font-size: 0.9em;
+      color: #bbb;
+      text-align: center;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .typing {
+      font-style: italic;
+      color: #ccc;
+      animation: blink 1s infinite;
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 2.2em;
+      }
+
+      .container {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🍀 TREBOL VIP</h1>
+  </header>
+
+  <div class="container">
+    <div class="section-title">🔮 ¿Cuál es tu pronóstico o pregunta futbolera?</div>
+    <input id="pregunta" type="text" placeholder="Ej: ¿Quién ganará el partido Argentina vs Brasil?" />
+    <button onclick="enviarPregunta()">Consultar a la IA</button>
+    <div id="respuesta"></div>
+  </div>
+
+  <div class="pronostico">
+    <p><span>📌</span><strong>Resultado:</strong> Gana Argentina o Empate</p>
+    <p><span>📅</span><strong>Fecha:</strong> 30 de Abril 2025</p>
+    <p><span>🕒</span><strong>Hora:</strong> 20:00</p>
+    <p><span>🏟️</span><strong>Estadio:</strong> Monumental de Buenos Aires</p>
+  </div>
+
+  <div class="footer">
+    ⚽ Hecho con pasión futbolera & tecnología | Powered by ChatGPT
+  </div>
+
+  <script>
+    async function enviarPregunta() {
+      const pregunta = document.getElementById("pregunta").value;
+      const respuestaDiv = document.getElementById("respuesta");
+
+      if (!pregunta.trim()) {
+        respuestaDiv.innerText = "Por favor, escribe una pregunta válida.";
+        respuestaDiv.style.display = "block";
+        return;
+      }
+
+      respuestaDiv.innerHTML = "<span class='typing'>⚙️ Consultando predicción, espera un momento...</span>";
+      respuestaDiv.style.display = "block";
+
+      const apiKey = "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";
+
+      const data = {
+        model: "gpt-4",
+        messages: [
+          {
+            role: "user",
+            content: pregunta
+          }
+        ]
+      };
+
+      try {
+        const respuesta = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apiKey}`
+          },
+          body: JSON.stringify(data)
+        });
+
+        const json = await respuesta.json();
+        const texto = json.choices[0].message.content;
+        respuestaDiv.innerText = texto;
+      } catch (error) {
+        respuestaDiv.innerText = "❌ Error al conectar con ChatGPT. Verifica tu conexión o API Key.";
+      }
+    }
+  </script>
+
+</body>
+</html>
